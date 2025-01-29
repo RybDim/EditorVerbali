@@ -12,6 +12,8 @@
     "@radix-ui/react-dialog": "^1.1.5",
     "@radix-ui/react-select": "^2.1.5",
     "@radix-ui/react-slot": "^1.1.1",
+    "@react-pdf-viewer/core": "^3.12.0",
+    "@react-pdf-viewer/toolbar": "^3.12.0",
     "@tanstack/react-table": "^8.20.6",
     "axios": "^1.7.9",
     "cheerio": "^1.0.0",
