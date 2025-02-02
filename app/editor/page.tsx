@@ -21,7 +21,7 @@ async function generateVerbale(formData: FormValues) : Promise<string> {
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({ latex: texDoc }),
+			body: JSON.stringify({ tex_string: texDoc }),
 		});
 
 		if(!response.ok){
