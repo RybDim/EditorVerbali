@@ -16,6 +16,24 @@ export type RinunciaBorsaDiRicerca = {
 
 export type AssegniDiRicerca = {
 	rinunce: RinunciaBorsaDiRicerca[];
+};
+
+export type RinnovoBorsaDiStudio = {
+	richiedente: string;
+	mesi: string;
+	data_partenza: string;
+	importo: string;
+	tema: string;
+	numero_bando: string;
+	data_bando: string;
+	assegnatario: string;
+	numero_protocollo: string;
+	upb: string;
+	upb_prof: string;
+}
+
+export type BorseDiStudio = {
+	rinnovi: RinnovoBorsaDiStudio[];
 }
 
 export type Verbale = {
