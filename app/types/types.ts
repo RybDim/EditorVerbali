@@ -19,8 +19,8 @@ export type AssegniDiRicerca = {
 };
 
 export type RinnovoBorsaDiStudio = {
-	richiedente: string;
-	mesi: string;
+	responsabile: string;
+	mesi_prolungamento: string;
 	data_partenza: string;
 	importo: string;
 	tema: string;
@@ -43,6 +43,7 @@ export type Verbale = {
 	direttore: string;
 	presenze: Presenza[];
 	assegniDiRicerca: AssegniDiRicerca;
+	borseDiStudio: BorseDiStudio;
 }
 
 export type FormValues = Verbale;
