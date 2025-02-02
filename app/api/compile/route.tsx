@@ -15,6 +15,10 @@ export async function POST(req: NextRequest){
     
         const tempDir = path.join(process.cwd(), "tmp", uuidv4());
         await fs.mkdir(tempDir, { recursive: true });
+
+        const logoPath = path.join(process.cwd(), "public", "logo_dmi.png");
+        const tempLogoPath = path.join(tempDir, "logo_dmi.png");
+        await fs.copyFile(logoPath, tempLogoPath);
     
         try { 
             const pdfBuffer = await new Promise<Buffer>((resolve, reject) => {
