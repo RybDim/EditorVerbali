@@ -12,8 +12,22 @@ import { useAtom } from "jotai";
 import { verbaleAtom } from "@/atoms/verbale";
 import { Skeleton } from "../ui/skeleton";
 
+const base64toBlob = (base64: string) => {
+
+	const bytes = atob(base64);
+	let length = bytes.length;
+	const out = new Uint8Array(length);
+
+	while (length--) {
+		out[length] = bytes.charCodeAt(length);
+	}
+
+	return new Blob([out], { type: "application/pdf" });
+};
+
 export function PdfViewer() {
 	const [verbale] = useAtom(verbaleAtom);
+	const url = URL.createObjectURL(base64toBlob(verbale.url));
 
 	const toolbarPluginInstance = toolbarPlugin();
 	const { Toolbar } = toolbarPluginInstance;
@@ -89,7 +103,7 @@ export function PdfViewer() {
 				</div>
 				<div className="h-screen overflow-hidden">
 					{verbale.url ? (
-						<Viewer fileUrl={verbale.url} plugins={[toolbarPluginInstance]} />
+						<Viewer fileUrl={url} plugins={[toolbarPluginInstance]} />
 					) : (
 						<Skeleton className="h-full w-full relative">
 							<div className="absolute inset-0 flex items-center justify-center">
