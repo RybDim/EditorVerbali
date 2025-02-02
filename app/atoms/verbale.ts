@@ -11,5 +11,3 @@ export const verbaleAtom = atom({
 	isLoading: false,
 	isError: false,
 });
-
-export const activeSectionsVerbaleAtom = atom([]);
