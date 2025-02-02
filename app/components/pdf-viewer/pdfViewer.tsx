@@ -25,7 +25,7 @@ const base64toBlob = (base64: string) => {
 	return new Blob([out], { type: "application/pdf" });
 };
 
-export function PdfViewer() {
+export default function PdfViewer() {
 	const [verbale] = useAtom(verbaleAtom);
 	const url = URL.createObjectURL(base64toBlob(verbale.url));
 

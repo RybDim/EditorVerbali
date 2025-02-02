@@ -1,7 +1,6 @@
 "use client";
 import { verbaleAtom } from "@/atoms/verbale";
 import { activeSectionsVerbaleAtom } from "@/atoms/verbale_sections";
-import { PdfViewer } from "@/components/pdf-viewer/pdfViewer";
 import { Presenze } from "@/components/sections/presenze/presenze";
 import { AssegniDiRIcerca } from "@/components/sections/sections/assegni_ricerca/main_assegni";
 import { Button } from "@/components/ui/button";
@@ -12,6 +11,7 @@ import { useAtom } from "jotai";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import dynamic from 'next/dynamic';
 
 async function generateVerbale(formData: FormValues) : Promise<string> {
 	const texDoc = template(formData);
@@ -75,6 +75,8 @@ export default function Editor() {
 			setSezioni((prev) => [...prev, value]);
 		}
 	};
+
+	const PdfViewer  = dynamic(() => import('../components/pdf-viewer/pdfViewer'), { ssr: false });
 
 	return (
 		<>
