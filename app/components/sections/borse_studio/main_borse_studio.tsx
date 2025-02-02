@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { RinnovoBorsaDiStudio } from "./rinnovo";
 
-export function AssegniDiRIcerca() {
+export function BorseDiStudio() {
 	const [sottosezioni, setSottosezioni] = useState<string[]>([]);
 	const [value, setSelectedValue] = useState<string | null>(null);
 

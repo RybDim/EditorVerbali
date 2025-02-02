@@ -2,7 +2,7 @@
 import { verbaleAtom } from "@/atoms/verbale";
 import { activeSectionsVerbaleAtom } from "@/atoms/verbale_sections";
 import { Presenze } from "@/components/sections/presenze/presenze";
-import { AssegniDiRIcerca } from "@/components/sections/sections/assegni_ricerca/main_assegni";
+import { AssegniDiRIcerca } from "@/components/sections/assegni_ricerca/main_assegni";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { template } from "@/lib/template";
@@ -12,6 +12,7 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import dynamic from 'next/dynamic';
+import { BorseDiStudio } from "@/components/sections/borse_studio/main_borse_studio";
 
 async function generateVerbale(formData: FormValues) : Promise<string> {
 	const texDoc = template(formData);
@@ -67,6 +68,8 @@ export default function Editor() {
 		switch (type) {
 			case "assegniDiRicerca":
 				return <AssegniDiRIcerca key="assegniDiRicerca" />;
+			case "borseDiStudio":
+				return <BorseDiStudio key="borseDiStudio" />;
 		}
 	};
 
@@ -91,7 +94,9 @@ export default function Editor() {
 								<SelectItem value="assegniDiRicerca">
 									Assegni di ricerca
 								</SelectItem>
-								<SelectItem value="richiesta">Richiesta</SelectItem>
+								<SelectItem value="borseDiStudio">
+									Borse di studio
+								</SelectItem>
 								<SelectItem value="conclusione">Conclusione</SelectItem>
 							</SelectGroup>
 						</SelectContent>
