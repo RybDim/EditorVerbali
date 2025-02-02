@@ -8,7 +8,6 @@ import {
 	SelectContent,
 	SelectGroup,
 	SelectItem,
-	// SelectLabel,
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
@@ -19,7 +18,6 @@ export function AssegniDiRIcerca() {
 	const [value, setSelectedValue] = useState<string | null>(null);
 
 	const renderComponent = (type: string) => {
-		console.log(type);
 		switch (type) {
 			case "rinuncia":
 				return <RinunciaAssegnoRicerca key="rinuncia" />;
@@ -46,7 +44,6 @@ export function AssegniDiRIcerca() {
 								</SelectTrigger>
 								<SelectContent>
 									<SelectGroup>
-										{/* <SelectLabel>Fruits</SelectLabel> */}
 										<SelectItem value="rinuncia">Rinuncia</SelectItem>
 										<SelectItem value="richiesta">Richiesta</SelectItem>
 										<SelectItem value="conclusione">Conclusione</SelectItem>

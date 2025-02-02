@@ -10,7 +10,6 @@ export interface TextAreaProps extends React.ComponentProps<"textarea"> {
 
 const Textarea = React.forwardRef<
 	HTMLTextAreaElement,
-	// React.ComponentProps<"textarea">
 	TextAreaProps
 >(({ className, name, ...props }, ref) => {
 	const formContext = useFormContext<FormValues>();
@@ -20,7 +19,6 @@ const Textarea = React.forwardRef<
 			control={formContext.control}
 			render={({ field }) => (
 				<textarea
-					// {...formContext.register(name)}
 					{...field}
 					value={typeof field.value === "string" ? field.value : ""}
 					className={cn(
