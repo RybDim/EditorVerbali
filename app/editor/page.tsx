@@ -1,12 +1,17 @@
 "use client";
+import { verbaleAtom } from "@/atoms/verbale";
+import { activeSectionsVerbaleAtom } from "@/atoms/verbale_sections";
 import { PdfViewer } from "@/components/pdf-viewer/pdfViewer";
 import { Presenze } from "@/components/sections/presenze/presenze";
+import { AssegniDiRIcerca } from "@/components/sections/sections/assegni_ricerca/main_assegni";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { template } from "@/lib/template";
 import { FormValues } from "@/types/types";
+import { useAtom } from "jotai";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 
 async function generateVerbale(formData: FormValues) : Promise<string> {
 	const texDoc = template(formData);
@@ -34,8 +39,37 @@ async function generateVerbale(formData: FormValues) : Promise<string> {
 export default function Editor() {
 	const [sezioni, setSezioni] = useState<string[]>([]);
 	const [value, setValue] = useState<string | null>(null);
-	const searchParams = useSearchParams();
+	const [verbale, setVerbale] = useAtom(verbaleAtom);
+	const [, setSections] = useAtom(activeSectionsVerbaleAtom);
 	
+	const searchParams = useSearchParams();
+	const formContext = useForm<FormValues>({ defaultValues: {
+		numero: searchParams.get("numero_verbale") as string,
+		data: searchParams.get("data") as string,
+		verbalizzante: searchParams.get("verbalizzante") as string,
+		direttore: searchParams.get("direttore") as string
+	} });
+
+	const handleFormSubmit = useCallback(async () => {
+		const formValues = formContext.getValues();
+		setVerbale({ ...verbale, isLoading: true });
+		setSections(sezioni);
+		try {
+			const nuovoUrlverbale = await generateVerbale(formValues);
+			setVerbale({ ...verbale, url: nuovoUrlverbale, isLoading: false });
+		} catch (error) {
+			console.error(error);
+			setVerbale({ ...verbale, isError: true, isLoading: false });
+		}
+	}, [formContext, verbale, setVerbale, sezioni, setSections]);
+
+	const renderComponent = (type: string) => {
+		switch (type) {
+			case "assegniDiRicerca":
+				return <AssegniDiRIcerca key="assegniDiRicerca" />;
+		}
+	};
+
 	const handleAdd = () => {
 		if (value && !sezioni.includes(value)) {
 			setSezioni((prev) => [...prev, value]);
@@ -74,7 +108,16 @@ export default function Editor() {
 			<div className="grid grid-cols-5 grid-rows-1">
 				<div className="col-span-3 p-4">
 					<div className="flex-col space-y-5">
-                        <Presenze />
+                        <FormProvider {...formContext}>
+							<form
+								className="flex-col space-y-5"
+								id="verbale-form"
+								onSubmit={formContext.handleSubmit(handleFormSubmit)}
+							>
+								<Presenze />
+								{sezioni.map((type) => renderComponent(type))}
+							</form>
+						</FormProvider>
 					</div>
 				</div>
 				<div className="col-span-2 col-start-4 p-4">
