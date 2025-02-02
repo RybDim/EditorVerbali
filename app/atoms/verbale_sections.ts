@@ -4,4 +4,4 @@ export interface VerbaleSections {
     sections: string[];
 }
 
-export const activeSectionsVerbaleAtom = atom([]);
+export const activeSectionsVerbaleAtom = atom<string[]>([]);
