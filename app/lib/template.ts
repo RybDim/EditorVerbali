@@ -74,7 +74,7 @@ export function template(values: FormValues) {
         ${currentSections
 					.map((section) => {
 						switch (section) {
-							case "Assegni di ricerca":
+							case "assegniDiRicerca":
 								return (
 									"\\section{Assegni di ricerca}" +
 									generator.assegniDiRicercaSection(
