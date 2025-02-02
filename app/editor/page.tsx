@@ -1,6 +1,31 @@
 "use client";
 import { PdfViewer } from "@/components/pdf-viewer/pdfViewer";
 import { Presenze } from "@/components/sections/presenze/presenze";
+import { template } from "@/lib/template";
+import { FormValues } from "@/types/types";
+
+async function generateVerbale(formData: FormValues) : Promise<string> {
+	const texDoc = template(formData);
+	try {
+		const response = await fetch("/api/compile", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ latex: texDoc }),
+		});
+
+		if(!response.ok){
+			throw new Error("Pdf generation failed");
+		}
+
+		const data = await response.json();
+		return data;
+	}catch(error){
+		console.log("Error generating pdf: ", error);
+		throw error;
+	}
+}
 
 export default function Editor() {
 	return (
