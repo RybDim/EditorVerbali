@@ -1,21 +1,33 @@
-import { AssegniDiRicerca, FormValues, RinunciaBorsaDiRicerca } from "@/types/types";
+import { AssegniDiRicerca, BorseDiStudio, FormValues, RinnovoBorsaDiStudio, RinunciaBorsaDiRicerca } from "@/types/types";
 import { source, stripIndent } from "common-tags";
 import { rinunciaBorsaTemplate } from "./templates/rinunciaBorsaTemplate";
 import { getDefaultStore } from "jotai";
 import { activeSectionsVerbaleAtom } from "@/atoms/verbale_sections";
+import { rinnovoBorsaDiStudioTemaplate } from "./templates/rinnovoBorsaStudioTemplate";
 
 const generator = {
 	assegniDiRicercaSection(subsecitons: AssegniDiRicerca) {
-		return this.rinunciaBorsaSubsection(subsecitons.rinunce);
+		return this.rinunciaAssegnoSubsection(subsecitons.rinunce);
 	},
 
-	rinunciaBorsaSubsection(rinunciaBorsa: Array<RinunciaBorsaDiRicerca>) {
+	rinunciaAssegnoSubsection(rinunciaBorsa: Array<RinunciaBorsaDiRicerca>) {
 		return source`
 			${rinunciaBorsa.map((rinuncia) => {
 				return stripIndent(rinunciaBorsaTemplate(rinuncia));
 			})}
 		`;
 	},
+
+	borseDiStudioSection(subsections: BorseDiStudio){
+		return this.rinnovoBorsaStudioSubsection(subsections.rinnovi);
+	},
+
+	rinnovoBorsaStudioSubsection(rinnovi: Array<RinnovoBorsaDiStudio>){
+		return source`
+		${rinnovi.map((rinnovo) => {
+			return stripIndent(rinnovoBorsaDiStudioTemaplate(rinnovo))
+		})}`
+	}
 };
 
 export function template(values: FormValues) {
@@ -81,6 +93,13 @@ export function template(values: FormValues) {
 										values.assegniDiRicerca as AssegniDiRicerca
 									)
 								);
+							case "borseDiStudio":
+								return (
+									"\\section{Borse di studio}" + 
+									generator.borseDiStudioSection(
+										values.borseDiStudio as BorseDiStudio
+									)
+								)
 						}
 					})
 					.join("\n\n")}
