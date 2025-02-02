@@ -2,7 +2,7 @@ import { AssegniDiRicerca, FormValues, RinunciaBorsaDiRicerca } from "@/types/ty
 import { source, stripIndent } from "common-tags";
 import { rinunciaBorsaTemplate } from "./templates/rinunciaBorsaTemplate";
 import { getDefaultStore } from "jotai";
-import { activeSectionsVerbaleAtom } from "@/atoms/verbale";
+import { activeSectionsVerbaleAtom } from "@/atoms/verbale_sections";
 
 const generator = {
 	assegniDiRicercaSection(subsecitons: AssegniDiRicerca) {
