@@ -33,7 +33,7 @@ export function PdfViewer() {
 	const { Toolbar } = toolbarPluginInstance;
 
 	return (
-		<Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+		<Worker workerUrl="/pdfjs/pdf.worker.min.mjs">
 			<div
 				className="rpv-core__viewer flex flex-col h-screen overflow-hidden"
 				style={{
