@@ -44,7 +44,6 @@ export async function POST(req: NextRequest){
     
             return NextResponse.json({
                 pdf: base64Pdf,
-                mimeType: "application/pdf"
             });
         }catch(error: unknown){
             const errorMessage = error instanceof Error ? error.message : "Unknown error";

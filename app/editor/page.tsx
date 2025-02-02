@@ -29,7 +29,7 @@ async function generateVerbale(formData: FormValues) : Promise<string> {
 		}
 
 		const data = await response.json();
-		return data;
+		return data.pdf;
 	}catch(error){
 		console.log("Error generating pdf: ", error);
 		throw error;
