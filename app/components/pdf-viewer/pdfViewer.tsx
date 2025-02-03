@@ -3,9 +3,7 @@
 import { Viewer, Worker } from "@react-pdf-viewer/core";
 import { toolbarPlugin } from "@react-pdf-viewer/toolbar";
 import { Loader2 } from "lucide-react";
-import type {
-	ToolbarSlot,
-} from "@react-pdf-viewer/toolbar";
+import type { ToolbarSlot } from "@react-pdf-viewer/toolbar";
 import "@react-pdf-viewer/toolbar/lib/styles/index.css";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import { useAtom } from "jotai";
@@ -13,7 +11,6 @@ import { verbaleAtom } from "@/atoms/verbale";
 import { Skeleton } from "../ui/skeleton";
 
 const base64toBlob = (base64: string) => {
-
 	const bytes = atob(base64);
 	let length = bytes.length;
 	const out = new Uint8Array(length);

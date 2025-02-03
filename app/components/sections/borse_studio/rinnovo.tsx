@@ -13,20 +13,19 @@ export function RinnovoBorsaDiStudio() {
 
 	const handleAdd = () => {
 		append({
-            responsabile: "",
-            mesi_prolungamento: "",
-            data_partenza: "",
-            importo: "",
-            tema: "",
-            numero_bando: "",
-            data_bando: "",
-            assegnatario: "",
-            numero_protocollo: "",
-            upb: "",
-            upb_prof: "",
+			responsabile: "",
+			mesi_prolungamento: "",
+			data_partenza: "",
+			importo: "",
+			tema: "",
+			numero_bando: "",
+			data_bando: "",
+			assegnatario: "",
+			numero_protocollo: "",
+			upb: "",
+			upb_prof: "",
 		});
 	};
-
 
 	return (
 		<Card className="shadow-none rounded-sm hover:shadow-md">
@@ -42,7 +41,9 @@ export function RinnovoBorsaDiStudio() {
 						<CardHeader>
 							<CardTitle>
 								<div className="flex gap-2 items-center">
-									<span className="whitespace-nowrap">Rinnovo borsa di studio dott.</span>
+									<span className="whitespace-nowrap">
+										Rinnovo borsa di studio dott.
+									</span>
 									<Input
 										type="text"
 										name={`borseDiStudio.rinnovi.${index}.assegnatario`}
@@ -69,7 +70,7 @@ export function RinnovoBorsaDiStudio() {
 									placeholder="Importo"
 								/>
 							</div>
-                            <div className="flex gap-3">
+							<div className="flex gap-3 mt-4">
 								<Input
 									type="number"
 									name={`borseDiStudio.rinnovi.${index}.upb`}

@@ -30,11 +30,11 @@ export type RinnovoBorsaDiStudio = {
 	numero_protocollo: string;
 	upb: string;
 	upb_prof: string;
-}
+};
 
 export type BorseDiStudio = {
 	rinnovi: RinnovoBorsaDiStudio[];
-}
+};
 
 export type Verbale = {
 	numero: string;
@@ -44,6 +44,6 @@ export type Verbale = {
 	presenze: Presenza[];
 	assegniDiRicerca: AssegniDiRicerca;
 	borseDiStudio: BorseDiStudio;
-}
+};
 
 export type FormValues = Verbale;

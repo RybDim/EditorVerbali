@@ -1,4 +1,10 @@
-import { AssegniDiRicerca, BorseDiStudio, FormValues, RinnovoBorsaDiStudio, RinunciaBorsaDiRicerca } from "@/types/types";
+import {
+	AssegniDiRicerca,
+	BorseDiStudio,
+	FormValues,
+	RinnovoBorsaDiStudio,
+	RinunciaBorsaDiRicerca,
+} from "@/types/types";
 import { source, stripIndent } from "common-tags";
 import { rinunciaBorsaTemplate } from "./templates/rinunciaBorsaTemplate";
 import { getDefaultStore } from "jotai";
@@ -18,16 +24,16 @@ const generator = {
 		`;
 	},
 
-	borseDiStudioSection(subsections: BorseDiStudio){
+	borseDiStudioSection(subsections: BorseDiStudio) {
 		return this.rinnovoBorsaStudioSubsection(subsections.rinnovi);
 	},
 
-	rinnovoBorsaStudioSubsection(rinnovi: Array<RinnovoBorsaDiStudio>){
+	rinnovoBorsaStudioSubsection(rinnovi: Array<RinnovoBorsaDiStudio>) {
 		return source`
 		${rinnovi.map((rinnovo) => {
-			return stripIndent(rinnovoBorsaDiStudioTemaplate(rinnovo))
-		})}`
-	}
+			return stripIndent(rinnovoBorsaDiStudioTemaplate(rinnovo));
+		})}`;
+	},
 };
 
 export function template(values: FormValues) {
@@ -36,8 +42,8 @@ export function template(values: FormValues) {
 		return `${giorno}/${mese}/${anno}`;
 	};
 
-    const store = getDefaultStore();
-    const currentSections = store.get(activeSectionsVerbaleAtom);
+	const store = getDefaultStore();
+	const currentSections = store.get(activeSectionsVerbaleAtom);
 
 	return stripIndent`
 		\\documentclass[a4paper]{article}
@@ -51,14 +57,14 @@ export function template(values: FormValues) {
 		\\geometry{top=2cm, bottom=5cm, left=2.5cm, right=2.5cm}
 		\\setlength{\\headheight}{80pt}
 		\\setlength{\\headsep}{0.5cm}
-		\\setlength{\\footskip}{0.5cm}   
+		\\setlength{\\footskip}{0.5cm}
 
 		\\pagestyle{fancy}
 		\\renewcommand{\\headrulewidth}{0pt}
 		\\fancyhf{}
 
 		\\fancyhead[CO]{
-			\\includegraphics[scale=0.2]{logo_dmi.png}\\\\[0.5em] 
+			\\includegraphics[scale=0.2]{logo_dmi.png}\\\\[0.5em]
 			\\textbf{Verbale n. ${values.numero} — ${normalizzaData(values.data)}}
 		}
 
@@ -79,7 +85,7 @@ export function template(values: FormValues) {
 
 		Verbale dell'adunanza del Consiglio di Dipartimento di Matematica e Informatica, convocata per
 		il giorno ${normalizzaData(
-			values.data
+			values.data,
 		)} alle ore 08:00 in prima convocazione e per il giorno 25.09.2024 alle ore 11:00
 		in seconda convocazione, presso l'aula Magna del DMI in viale A. Doria 6, per discutere il
 		seguente ordine del giorno:
@@ -90,16 +96,16 @@ export function template(values: FormValues) {
 								return (
 									"\\section{Assegni di ricerca}" +
 									generator.assegniDiRicercaSection(
-										values.assegniDiRicerca as AssegniDiRicerca
+										values.assegniDiRicerca as AssegniDiRicerca,
 									)
 								);
 							case "borseDiStudio":
 								return (
-									"\\section{Borse di studio}" + 
+									"\\section{Borse di studio}" +
 									generator.borseDiStudioSection(
-										values.borseDiStudio as BorseDiStudio
+										values.borseDiStudio as BorseDiStudio,
 									)
-								)
+								);
 						}
 					})
 					.join("\n\n")}
