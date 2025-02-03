@@ -12,6 +12,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { ConclusioneAssegnoRicerca } from "./conclusione";
 
 export function AssegniDiRIcerca() {
 	const [sottosezioni, setSottosezioni] = useState<string[]>([]);
@@ -21,6 +22,8 @@ export function AssegniDiRIcerca() {
 		switch (type) {
 			case "rinuncia":
 				return <RinunciaAssegnoRicerca key="rinuncia" />;
+			case "conclusione":
+				return <ConclusioneAssegnoRicerca key="conclusione" />;
 			default:
 				return null;
 		}
@@ -57,8 +60,7 @@ export function AssegniDiRIcerca() {
 					</div>
 				</CardHeader>
 				<CardContent className="rounded-sm p-5">
-					<div className="flex-col gap-5">
-						{/* <RinunciaBorsaRicerca /> */}
+					<div className="flex-col gap-5 space-y-5">
 						{sottosezioni.map((type) => renderComponent(type))}
 					</div>
 				</CardContent>

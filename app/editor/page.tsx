@@ -110,7 +110,6 @@ export default function Editor() {
 									Assegni di ricerca
 								</SelectItem>
 								<SelectItem value="borseDiStudio">Borse di studio</SelectItem>
-								<SelectItem value="conclusione">Conclusione</SelectItem>
 							</SelectGroup>
 						</SelectContent>
 					</Select>
