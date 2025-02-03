@@ -6,7 +6,7 @@ export type Presenza = {
 	assente_giustificato: string;
 };
 
-export type RinunciaBorsaDiRicerca = {
+export type RinunciaAssegnoRicerca = {
 	numeroProtocollo: string;
 	rinunciatario: string;
 	numeroBando: string;
@@ -15,10 +15,10 @@ export type RinunciaBorsaDiRicerca = {
 };
 
 export type AssegniDiRicerca = {
-	rinunce: RinunciaBorsaDiRicerca[];
+	rinunce: RinunciaAssegnoRicerca[];
 };
 
-export type RinnovoBorsaDiStudio = {
+export type RinnovoBorsaStudio = {
 	responsabile: string;
 	mesi_prolungamento: string;
 	data_partenza: string;
@@ -33,7 +33,7 @@ export type RinnovoBorsaDiStudio = {
 };
 
 export type BorseDiStudio = {
-	rinnovi: RinnovoBorsaDiStudio[];
+	rinnovi: RinnovoBorsaStudio[];
 };
 
 export type Verbale = {
