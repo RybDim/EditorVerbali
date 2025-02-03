@@ -2,12 +2,10 @@ import { atom } from "jotai";
 
 export interface Verbale {
 	url: string;
-	isLoading: boolean;
-	isError: boolean;
+	sections: string[];
 }
 
-export const verbaleAtom = atom({
+export const verbaleAtom = atom<Verbale>({
 	url: "",
-	isLoading: false,
-	isError: false,
+	sections: [],
 });

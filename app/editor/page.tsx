@@ -1,6 +1,6 @@
 "use client";
 import { verbaleAtom } from "@/atoms/verbale";
-import { activeSectionsVerbaleAtom } from "@/atoms/verbale_sections";
+// import { activeSectionsVerbaleAtom } from "@/atoms/verbale_sections";
 import { Presenze } from "@/components/sections/presenze/presenze";
 import { AssegniDiRIcerca } from "@/components/sections/assegni_ricerca/main_assegni";
 import { Button } from "@/components/ui/button";
@@ -48,7 +48,7 @@ export default function Editor() {
 	const [sezioni, setSezioni] = useState<string[]>([]);
 	const [value, setValue] = useState<string | null>(null);
 	const [verbale, setVerbale] = useAtom(verbaleAtom);
-	const [, setSections] = useAtom(activeSectionsVerbaleAtom);
+	// const [, setSections] = useAtom(activeSectionsVerbaleAtom);
 
 	const searchParams = useSearchParams();
 	const formContext = useForm<FormValues>({
@@ -62,16 +62,19 @@ export default function Editor() {
 
 	const handleFormSubmit = useCallback(async () => {
 		const formValues = formContext.getValues();
-		setVerbale({ ...verbale, isLoading: true });
-		setSections(sezioni);
+		// setVerbale({ ...verbale, isLoading: true });
 		try {
 			const nuovoUrlverbale = await generateVerbale(formValues);
-			setVerbale({ ...verbale, url: nuovoUrlverbale, isLoading: false });
+			setVerbale({
+				...verbale,
+				url: nuovoUrlverbale,
+				sections: sezioni,
+			});
 		} catch (error) {
 			console.error(error);
-			setVerbale({ ...verbale, isError: true, isLoading: false });
+			// setVerbale({ ...verbale });
 		}
-	}, [formContext, verbale, setVerbale, sezioni, setSections]);
+	}, [formContext, verbale, setVerbale, sezioni]);
 
 	const renderComponent = (type: string) => {
 		switch (type) {

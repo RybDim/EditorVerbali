@@ -8,7 +8,7 @@ import {
 import { source, stripIndent } from "common-tags";
 import { rinunciaAssegnoRicercaTemplate } from "./templates/rinunciaAssegnoRicercaTemplate";
 import { getDefaultStore } from "jotai";
-import { activeSectionsVerbaleAtom } from "@/atoms/verbale_sections";
+import { verbaleAtom } from "@/atoms/verbale";
 import { rinnovoBorsaStudioTemaplate } from "./templates/rinnovoBorsaStudioTemplate";
 
 const generator = {
@@ -43,7 +43,7 @@ export function template(values: FormValues) {
 	};
 
 	const store = getDefaultStore();
-	const currentSections = store.get(activeSectionsVerbaleAtom);
+	const verbale = store.get(verbaleAtom);
 
 	return stripIndent`
 		\\documentclass[a4paper]{article}
@@ -89,7 +89,7 @@ export function template(values: FormValues) {
 		)} alle ore 08:00 in prima convocazione e per il giorno 25.09.2024 alle ore 11:00
 		in seconda convocazione, presso l'aula Magna del DMI in viale A. Doria 6, per discutere il
 		seguente ordine del giorno:
-        ${currentSections
+        ${verbale.sections
 					.map((section) => {
 						switch (section) {
 							case "assegniDiRicerca":
