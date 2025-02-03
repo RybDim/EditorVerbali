@@ -14,8 +14,16 @@ export type RinunciaAssegnoRicerca = {
 	motivoRinuncia: string;
 };
 
+export type ConclusioneAssegnoRicerca = {
+	dottore: string;
+	ssd: string;
+	titolo: string;
+	responsabile_scientifico: string;
+};
+
 export type AssegniDiRicerca = {
 	rinunce: RinunciaAssegnoRicerca[];
+	conclusioni: ConclusioneAssegnoRicerca[];
 };
 
 export type RinnovoBorsaStudio = {

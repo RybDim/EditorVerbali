@@ -1,6 +1,7 @@
 import {
 	AssegniDiRicerca,
 	BorseDiStudio,
+	ConclusioneAssegnoRicerca,
 	FormValues,
 	RinnovoBorsaStudio,
 	RinunciaAssegnoRicerca,
@@ -10,10 +11,14 @@ import { rinunciaAssegnoRicercaTemplate } from "./templates/rinunciaAssegnoRicer
 import { getDefaultStore } from "jotai";
 import { verbaleAtom } from "@/atoms/verbale";
 import { rinnovoBorsaStudioTemaplate } from "./templates/rinnovoBorsaStudioTemplate";
+import { conclusioneAssegnoRicercaTemplate } from "./templates/conclusioneAssegnoRicercaTemplate";
 
 const generator = {
-	assegniDiRicercaSection(subsecitons: AssegniDiRicerca) {
-		return this.rinunciaAssegnoSubsection(subsecitons.rinunce);
+	assegniDiRicercaSection(subsections: AssegniDiRicerca) {
+		return [
+			this.rinunciaAssegnoSubsection(subsections.rinunce),
+			this.conclusioneAssegnoSubsection(subsections.conclusioni),
+		].join("\n\n");
 	},
 
 	rinunciaAssegnoSubsection(rinunciaBorsa: Array<RinunciaAssegnoRicerca>) {
@@ -22,6 +27,16 @@ const generator = {
 				return stripIndent(rinunciaAssegnoRicercaTemplate(rinuncia));
 			})}
 		`;
+	},
+
+	conclusioneAssegnoSubsection(
+		conclusioneAssegno: Array<ConclusioneAssegnoRicerca>,
+	) {
+		return source`
+				${conclusioneAssegno.map((conclusione) => {
+					return stripIndent(conclusioneAssegnoRicercaTemplate(conclusione));
+				})}
+			`;
 	},
 
 	borseDiStudioSection(subsections: BorseDiStudio) {
