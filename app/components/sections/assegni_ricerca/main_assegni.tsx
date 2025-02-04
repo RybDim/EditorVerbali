@@ -48,7 +48,6 @@ export function AssegniDiRIcerca() {
 								<SelectContent>
 									<SelectGroup>
 										<SelectItem value="rinuncia">Rinuncia</SelectItem>
-										<SelectItem value="richiesta">Richiesta</SelectItem>
 										<SelectItem value="conclusione">Conclusione</SelectItem>
 									</SelectGroup>
 								</SelectContent>
