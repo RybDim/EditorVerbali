@@ -20,6 +20,7 @@ import { useCallback, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import dynamic from "next/dynamic";
 import { BorseDiStudio } from "@/components/sections/borse_studio/main_borse_studio";
+import { memo } from "react";
 
 async function generateVerbale(formData: FormValues): Promise<string> {
 	const texDoc = template(formData);
@@ -43,6 +44,26 @@ async function generateVerbale(formData: FormValues): Promise<string> {
 		throw error;
 	}
 }
+
+const SectionComponent = memo(({ type }: { type: string }) => {
+	switch (type) {
+		case "assegniDiRicerca":
+			return <AssegniDiRIcerca />;
+		case "borseDiStudio":
+			return <BorseDiStudio />;
+		default:
+			return null;
+	}
+});
+
+SectionComponent.displayName = "SectionComponent";
+
+const MemoizedPdfViewer = memo(
+	dynamic(() => import("../components/pdf-viewer/pdfViewer"), {
+		ssr: false,
+		loading: () => <div>Loading PDF viewer...</div>,
+	}),
+);
 
 export default function Editor() {
 	const [sezioni, setSezioni] = useState<string[]>([]);
@@ -76,25 +97,11 @@ export default function Editor() {
 		}
 	}, [formContext, verbale, setVerbale, sezioni]);
 
-	const renderComponent = (type: string) => {
-		switch (type) {
-			case "assegniDiRicerca":
-				return <AssegniDiRIcerca key="assegniDiRicerca" />;
-			case "borseDiStudio":
-				return <BorseDiStudio key="borseDiStudio" />;
-		}
-	};
-
 	const handleAdd = () => {
 		if (value && !sezioni.includes(value)) {
 			setSezioni((prev) => [...prev, value]);
 		}
 	};
-
-	const PdfViewer = dynamic(
-		() => import("../components/pdf-viewer/pdfViewer"),
-		{ ssr: false },
-	);
 
 	return (
 		<>
@@ -134,14 +141,16 @@ export default function Editor() {
 								onSubmit={formContext.handleSubmit(handleFormSubmit)}
 							>
 								<Presenze />
-								{sezioni.map((type) => renderComponent(type))}
+								{sezioni.map((type) => (
+									<SectionComponent key={type} type={type} />
+								))}
 							</form>
 						</FormProvider>
 					</div>
 				</div>
 				<div className="col-span-2 col-start-4 p-4">
 					<div className="sticky top-[calc(4rem+7px)]">
-						<PdfViewer />
+						<MemoizedPdfViewer />
 					</div>
 				</div>
 			</div>

@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 import type { ToolbarSlot } from "@react-pdf-viewer/toolbar";
 import "@react-pdf-viewer/toolbar/lib/styles/index.css";
 import "@react-pdf-viewer/core/lib/styles/index.css";
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { verbaleAtom } from "@/atoms/verbale";
 import { Skeleton } from "../ui/skeleton";
 
@@ -23,7 +23,7 @@ const base64toBlob = (base64: string) => {
 };
 
 export default function PdfViewer() {
-	const [verbale] = useAtom(verbaleAtom);
+	const verbale = useAtomValue(verbaleAtom);
 	const url = URL.createObjectURL(base64toBlob(verbale.url));
 
 	const toolbarPluginInstance = toolbarPlugin();
