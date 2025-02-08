@@ -21,19 +21,21 @@ const generator = {
 		].join("\n\n");
 	},
 
-	rinunciaAssegnoSubsection(rinunciaBorsa: Array<RinunciaAssegnoRicerca>) {
+	rinunciaAssegnoSubsection(
+		rinunciaBorsa: Array<RinunciaAssegnoRicerca> | null,
+	) {
 		return source`
-			${rinunciaBorsa.map((rinuncia) => {
+			${rinunciaBorsa?.map((rinuncia) => {
 				return stripIndent(rinunciaAssegnoRicercaTemplate(rinuncia));
 			})}
 		`;
 	},
 
 	conclusioneAssegnoSubsection(
-		conclusioneAssegno: Array<ConclusioneAssegnoRicerca>,
+		conclusioneAssegno: Array<ConclusioneAssegnoRicerca> | null,
 	) {
 		return source`
-				${conclusioneAssegno.map((conclusione) => {
+				${conclusioneAssegno?.map((conclusione) => {
 					return stripIndent(conclusioneAssegnoRicercaTemplate(conclusione));
 				})}
 			`;
@@ -43,9 +45,9 @@ const generator = {
 		return this.rinnovoBorsaStudioSubsection(subsections.rinnovi);
 	},
 
-	rinnovoBorsaStudioSubsection(rinnovi: Array<RinnovoBorsaStudio>) {
+	rinnovoBorsaStudioSubsection(rinnovi: Array<RinnovoBorsaStudio> | null) {
 		return source`
-		${rinnovi.map((rinnovo) => {
+		${rinnovi?.map((rinnovo) => {
 			return stripIndent(rinnovoBorsaStudioTemaplate(rinnovo));
 		})}`;
 	},
@@ -59,6 +61,13 @@ export function template(values: FormValues) {
 
 	const store = getDefaultStore();
 	const verbale = store.get(verbaleAtom);
+
+	const items = verbale.sections
+		.map((section) => "\\item " + section)
+		.join("\n");
+
+	const itemList =
+		items.length > 0 ? `\\begin{enumerate}\n${items}\n\\end{enumerate}` : "";
 
 	return stripIndent`
 		\\documentclass[a4paper]{article}
@@ -96,34 +105,39 @@ export function template(values: FormValues) {
 
 
 
-        \\begin{document}
+    \\begin{document}
 
-		Verbale dell'adunanza del Consiglio di Dipartimento di Matematica e Informatica, convocata per
-		il giorno ${normalizzaData(
-			values.data,
-		)} alle ore 08:00 in prima convocazione e per il giorno 25.09.2024 alle ore 11:00
-		in seconda convocazione, presso l'aula Magna del DMI in viale A. Doria 6, per discutere il
-		seguente ordine del giorno:
-        ${verbale.sections
-					.map((section) => {
-						switch (section) {
-							case "assegniDiRicerca":
-								return (
-									"\\section{Assegni di ricerca}" +
-									generator.assegniDiRicercaSection(
-										values.assegniDiRicerca as AssegniDiRicerca,
-									)
-								);
-							case "borseDiStudio":
-								return (
-									"\\section{Borse di studio}" +
-									generator.borseDiStudioSection(
-										values.borseDiStudio as BorseDiStudio,
-									)
-								);
-						}
-					})
-					.join("\n\n")}
-        \\end{document}
+			Verbale dell'adunanza del Consiglio di Dipartimento di Matematica e Informatica, convocata per
+			il giorno ${normalizzaData(
+				values.data,
+			)} alle ore 08:00 in prima convocazione e per il giorno 25.09.2024 alle ore 11:00
+			in seconda convocazione, presso l'aula Magna del DMI in viale A. Doria 6, per discutere il
+			seguente ordine del giorno:
+
+			${itemList}
+
+	    ${verbale.sections
+				.map((section) => {
+					switch (section) {
+						case "assegniDiRicerca":
+							return (
+								"\\section{Assegni di ricerca}" +
+								generator.assegniDiRicercaSection(
+									values.assegniDiRicerca as AssegniDiRicerca,
+								)
+							);
+						case "borseDiStudio":
+							return (
+								"\\section{Borse di studio}" +
+								generator.borseDiStudioSection(
+									values.borseDiStudio as BorseDiStudio,
+								)
+							);
+						default:
+							return "";
+					}
+				})
+				.join("\n\n")}
+    \\end{document}
 		`;
 }
