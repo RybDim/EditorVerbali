@@ -21,6 +21,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import dynamic from "next/dynamic";
 import { BorseDiStudio } from "@/components/sections/borse_studio/main_borse_studio";
 import { memo } from "react";
+import { ApprovazioneVerbalePrecedente } from "@/components/sections/approvazione_verbale/approvazione_verbale";
 
 async function generateVerbale(formData: FormValues): Promise<string> {
 	const texDoc = template(formData);
@@ -141,6 +142,7 @@ export default function Editor() {
 								onSubmit={formContext.handleSubmit(handleFormSubmit)}
 							>
 								<Presenze />
+								<ApprovazioneVerbalePrecedente />
 								{sezioni.map((type) => (
 									<SectionComponent key={type} type={type} />
 								))}

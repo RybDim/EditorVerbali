@@ -66,8 +66,7 @@ export function template(values: FormValues) {
 		.map((section) => "\\item " + section)
 		.join("\n");
 
-	const itemList =
-		items.length > 0 ? `\\begin{enumerate}\n${items}\n\\end{enumerate}` : "";
+	const itemList = items.length > 0 ? `${items}\n` : "";
 
 	return stripIndent`
 		\\documentclass[a4paper]{article}
@@ -114,7 +113,13 @@ export function template(values: FormValues) {
 			in seconda convocazione, presso l'aula Magna del DMI in viale A. Doria 6, per discutere il
 			seguente ordine del giorno:
 
-			${itemList}
+			\\begin{enumerate}\n
+				\\item{Approvazione verbale precedente}\n
+				${itemList}
+			\\end{enumerate}
+
+			\\section{Approvazione verbale precedente}
+			Il Direttore mette ai voti l’approvazione del verbale nr. ${values.approvazione.numero_verbale} del ${normalizzaData(values.approvazione.data_verbale)} inviato in bozza a tutti i componenti del Consiglio. Nella forma emendata esso viene approvato da tutti i presenti alla seduta odierna, presenti anche nella sopracitata seduta, con l’astensione degli assenti (Allegato x). \\textbf{Il Consiglio, unanime, approva.}
 
 	    ${verbale.sections
 				.map((section) => {

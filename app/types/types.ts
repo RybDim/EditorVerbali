@@ -6,6 +6,11 @@ export type Presenza = {
 	assente_giustificato: string;
 };
 
+export type ApprovazioneVerbalePrecedente = {
+	numero_verbale: string;
+	data_verbale: string;
+};
+
 export type RinunciaAssegnoRicerca = {
 	numeroProtocollo: string;
 	rinunciatario: string;
@@ -50,6 +55,7 @@ export type Verbale = {
 	verbalizzante: string;
 	direttore: string;
 	presenze: Presenza[];
+	approvazione: ApprovazioneVerbalePrecedente;
 	assegniDiRicerca: AssegniDiRicerca;
 	borseDiStudio: BorseDiStudio;
 };
