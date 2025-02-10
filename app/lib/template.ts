@@ -55,7 +55,7 @@ const generator = {
 
 export function template(values: FormValues) {
 	const normalizzaData = (data: string) => {
-		const [anno, mese, giorno] = data.split("-");
+		const [anno, mese, giorno] = data ? data.split("-") : "";
 		return `${giorno}/${mese}/${anno}`;
 	};
 
@@ -124,14 +124,14 @@ export function template(values: FormValues) {
 	    ${verbale.sections
 				.map((section) => {
 					switch (section) {
-						case "assegniDiRicerca":
+						case "Assegni di ricerca":
 							return (
 								"\\section{Assegni di ricerca}" +
 								generator.assegniDiRicercaSection(
 									values.assegniDiRicerca as AssegniDiRicerca,
 								)
 							);
-						case "borseDiStudio":
+						case "Borse di studio":
 							return (
 								"\\section{Borse di studio}" +
 								generator.borseDiStudioSection(

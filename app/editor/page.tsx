@@ -48,9 +48,9 @@ async function generateVerbale(formData: FormValues): Promise<string> {
 
 const SectionComponent = memo(({ type }: { type: string }) => {
 	switch (type) {
-		case "assegniDiRicerca":
+		case "Assegni di ricerca":
 			return <AssegniDiRIcerca />;
-		case "borseDiStudio":
+		case "Borse di studio":
 			return <BorseDiStudio />;
 		default:
 			return null;
@@ -114,10 +114,10 @@ export default function Editor() {
 						</SelectTrigger>
 						<SelectContent>
 							<SelectGroup>
-								<SelectItem value="assegniDiRicerca">
+								<SelectItem value="Assegni di ricerca">
 									Assegni di ricerca
 								</SelectItem>
-								<SelectItem value="borseDiStudio">Borse di studio</SelectItem>
+								<SelectItem value="Borse di studio">Borse di studio</SelectItem>
 							</SelectGroup>
 						</SelectContent>
 					</Select>
