@@ -8,7 +8,7 @@ export const RegisterSchema = z.object({
 	}),
 	confirm_password: z.string()
 })
-.refine((data) => data.password !== data.confirm_password, {
+.refine((data) => data.password === data.confirm_password, {
 	message: "Password non corrisponde",
-	path: ["conferma"],
+	path: ["confirm_password"],
 });
