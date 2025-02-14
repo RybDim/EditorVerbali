@@ -18,6 +18,9 @@ import { Button } from "@/components/ui/button";
 import { FormError } from "./form_error";
 import { FormSuccess } from "./form_success";
 import Link from "next/link";
+import { useState, useTransition } from "react";
+import { authClient } from "@/lib/auth_client";
+import { Loader2 } from "lucide-react";
 
 export function LoginForm() {
 	const form = useForm<z.infer<typeof LoginSchema>>({
@@ -28,8 +31,30 @@ export function LoginForm() {
 		},
 	});
 
+	const [isPending, startTransition] = useTransition();
+	const [error, setError] = useState<string | undefined>("");
+	const [success, setSuccess] = useState<string | undefined>("");
+
 	const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-		console.log(values)
+		startTransition(async () => {
+			const { email, password } = values;
+			await authClient.signIn.email({
+				email,
+				password,
+				callbackURL: "/dashboard",
+			}, {
+				onRequest: (ctx) => {
+					console.log(ctx);
+				},
+				onSuccess: (ctx) => {
+					console.log(ctx);
+					setSuccess("Accesso avvenuto con successo");
+				},
+				onError: (ctx) => {
+					setError(ctx.error.message);
+				}
+			});
+		});
 	};
 
 	return (
@@ -56,6 +81,7 @@ export function LoginForm() {
 											)}
 											type="email"
 											placeholder="mail@esempio.com"
+											disabled={isPending}
 										/>
 									</FormControl>
 									<FormMessage />
@@ -81,6 +107,7 @@ export function LoginForm() {
 											)}
 											type="password"
 											placeholder="******"
+											disabled={isPending}
 										/>
 									</FormControl>
 									<FormMessage />
@@ -88,10 +115,20 @@ export function LoginForm() {
 							)}
 						/>
 					</div>
-					<FormError message="" />
-					<FormSuccess message="" />
-					<Button type="submit" className="w-full">
-						Accedi
+					<FormError message={error} />
+					<FormSuccess message={success} />
+					<Button
+						type="submit"
+						className="w-full"
+						disabled={isPending}
+					>
+						{isPending ? 
+							(
+								<Loader2 size={16} className="animate-spin" />
+							) : (
+							"Accedi"
+							)
+						}
 					</Button>
 				</form>
 			</Form>
