@@ -17,6 +17,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { FormError } from "./form_error";
 import { FormSuccess } from "./form_success";
+import { useState, useTransition } from "react";
+import { authClient } from "@/lib/auth_client";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/router";
 
 export function RegisterForm() {
 	const form = useForm<z.infer<typeof RegisterSchema>>({
@@ -29,8 +33,33 @@ export function RegisterForm() {
 		},
 	});
 
+	const [isPending, startTransition] = useTransition();
+	const [error, setError] = useState<string | undefined>("");
+	const [success, setSuccess] = useState<string | undefined>("");
+	
+	const router = useRouter();
+
 	const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-		console.log(values);
+		startTransition(async () => {
+			const { name, email, password } = values;
+			await authClient.signUp.email({
+				name: name,
+				password: password,
+				email: email,
+			}, {
+				onRequest: (ctx) => {
+					console.log(ctx);
+				},
+				onSuccess: (ctx) => {
+					console.log(ctx);
+					setSuccess("Registrazione avvenuta con successo");
+					router.push("/dashboard");
+				},
+				onError: (ctx) => {
+					setError(ctx.error.message);
+				},
+			});
+		});
 	};
 
 	return (
@@ -57,6 +86,7 @@ export function RegisterForm() {
 											)}
 											type="string"
 											placeholder="Mario Rossi"
+											disabled={isPending}
 										/>
 									</FormControl>
 									<FormMessage />
@@ -77,6 +107,7 @@ export function RegisterForm() {
 											)}
 											type="email"
 											placeholder="mail@esempio.com"
+											disabled={isPending}
 										/>
 									</FormControl>
 									<FormMessage />
@@ -97,6 +128,7 @@ export function RegisterForm() {
 											)}
 											type="password"
 											placeholder="******"
+											disabled={isPending}
 										/>
 									</FormControl>
 									<FormMessage />
@@ -117,6 +149,7 @@ export function RegisterForm() {
 											)}
 											type="password"
 											placeholder="******"
+											disabled={isPending}
 										/>
 									</FormControl>
 									<FormMessage />
@@ -124,10 +157,16 @@ export function RegisterForm() {
 							)}
 						/>
 					</div>
-					<FormError message="" />
-					<FormSuccess message="" />
+					<FormError message={error} />
+					<FormSuccess message={success} />
 					<Button type="submit" className="w-full">
-						Conferma
+						{isPending ? 
+							(
+								<Loader2 size={16} className="animate-spin" />
+							) : (
+							"Conferma"
+							)
+						}
 					</Button>
 				</form>
 			</Form>

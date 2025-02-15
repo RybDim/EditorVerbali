@@ -60,7 +60,7 @@ const SectionComponent = memo(({ type }: { type: string }) => {
 SectionComponent.displayName = "SectionComponent";
 
 const MemoizedPdfViewer = memo(
-	dynamic(() => import("../components/pdf-viewer/pdfViewer"), {
+	dynamic(() => import("../../components/pdf-viewer/pdfViewer"), {
 		ssr: false,
 		loading: () => <div>Loading PDF viewer...</div>,
 	}),
