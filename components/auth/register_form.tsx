@@ -20,7 +20,7 @@ import { FormSuccess } from "./form_success";
 import { useState, useTransition } from "react";
 import { authClient } from "@/lib/auth_client";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export function RegisterForm() {
 	const form = useForm<z.infer<typeof RegisterSchema>>({
