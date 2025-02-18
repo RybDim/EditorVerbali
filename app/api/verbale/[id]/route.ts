@@ -38,8 +38,7 @@ export async function PUT(
 	try {
 		const id = (await params).id;
 		const data = await req.json();
-		console.log(data);
-		await prisma.verbale.update({
+		const updatedVerbale = await prisma.verbale.update({
 			where: {
 				id: id,
 			},
@@ -49,7 +48,7 @@ export async function PUT(
 		});
 
 		return NextResponse.json({
-			message: "Verbale aggiornato"
+			updatedVerbale: updatedVerbale,
 		}, {
 			status: 200
 		})
