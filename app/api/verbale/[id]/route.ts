@@ -43,7 +43,8 @@ export async function PUT(
 				id: id,
 			},
 			data: {
-				data
+				data: data.data,
+				sections: data.sections
 			}
 		});
 

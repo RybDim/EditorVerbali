@@ -1,3 +1,4 @@
+"use server";
 import {
 	AssegniDiRicerca,
 	BorseDiStudio,
@@ -53,7 +54,7 @@ const generator = {
 	},
 };
 
-export function template(values: FormValues) {
+export async function template(values: FormValues) {
 	const normalizzaData = (data: string) => {
 		const [anno, mese, giorno] = data ? data.split("-") : "";
 		return `${giorno}/${mese}/${anno}`;
