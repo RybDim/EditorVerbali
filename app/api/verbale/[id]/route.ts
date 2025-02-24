@@ -44,7 +44,8 @@ export async function PUT(
 			},
 			data: {
 				data: data.data,
-				sections: data.sections
+				sections: data.sections,
+				base64: data.base64
 			}
 		});
 

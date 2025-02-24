@@ -16,7 +16,7 @@ export function formatDate(dateString: string) {
 }
 
 export async function generateVerbale(formData: FormValues): Promise<string> {
-	const texDoc = template(formData);
+	const texDoc = await template(formData);
 	try {
 		const response = await fetch("/api/compile", {
 			method: "POST",
