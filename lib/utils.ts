@@ -2,6 +2,7 @@ import { FormValues } from "@/types/types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { template } from "./template";
+import axios from "axios";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -15,25 +16,20 @@ export function formatDate(dateString: string) {
 	})
 }
 
-export async function generateVerbale(formData: FormValues): Promise<string> {
-	const texDoc = await template(formData);
+export async function generateVerbale(formData: FormValues, sections: string[]): Promise<string> {
+	const texDoc = await template(formData, sections);
 	try {
-		const response = await fetch("/api/compile", {
-			method: "POST",
+		const response = await axios.post("/api/compile", {
+			tex_string: texDoc,
+		}, {
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({ tex_string: texDoc }),
 		});
 
-		if (!response.ok) {
-			throw new Error("Pdf generation failed");
-		}
-
-		const data = await response.json();
-		return data.pdf;
+		return response.data.pdf;
 	} catch (error) {
-		console.log("Error generating pdf: ", error);
+		console.error("Error generating PDF:", error);
 		throw error;
 	}
 }

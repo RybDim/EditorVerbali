@@ -9,61 +9,72 @@ import {
 } from "@/types/types";
 import { source, stripIndent } from "common-tags";
 import { rinunciaAssegnoRicercaTemplate } from "./templates/rinunciaAssegnoRicercaTemplate";
-import { getDefaultStore } from "jotai";
-import { verbaleAtom } from "@/atoms/verbale";
 import { rinnovoBorsaStudioTemaplate } from "./templates/rinnovoBorsaStudioTemplate";
 import { conclusioneAssegnoRicercaTemplate } from "./templates/conclusioneAssegnoRicercaTemplate";
 
 const generator = {
-	assegniDiRicercaSection(subsections: AssegniDiRicerca) {
-		return [
-			this.rinunciaAssegnoSubsection(subsections.rinunce),
-			this.conclusioneAssegnoSubsection(subsections.conclusioni),
-		].join("\n\n");
+	assegniDiRicercaSection(subsections: AssegniDiRicerca | undefined) {
+		if (!subsections) return "";
+		
+		const rinuncePart = this.rinunciaAssegnoSubsection(subsections.rinunce);
+		const conclusioniPart = this.conclusioneAssegnoSubsection(subsections.conclusioni);
+		
+		if (!rinuncePart && !conclusioniPart) return "";
+		if (!rinuncePart) return conclusioniPart;
+		if (!conclusioniPart) return rinuncePart;
+		
+		return [rinuncePart, conclusioniPart].join("\n\n");
 	},
 
 	rinunciaAssegnoSubsection(
-		rinunciaBorsa: Array<RinunciaAssegnoRicerca> | null,
+		rinunciaBorsa: Array<RinunciaAssegnoRicerca> | null | undefined,
 	) {
+		if (!rinunciaBorsa || rinunciaBorsa.length === 0) return "";
+		
 		return source`
-			${rinunciaBorsa?.map((rinuncia) => {
+			${rinunciaBorsa.map((rinuncia) => {
 				return stripIndent(rinunciaAssegnoRicercaTemplate(rinuncia));
 			})}
 		`;
 	},
 
 	conclusioneAssegnoSubsection(
-		conclusioneAssegno: Array<ConclusioneAssegnoRicerca> | null,
+		conclusioneAssegno: Array<ConclusioneAssegnoRicerca> | null | undefined,
 	) {
+		if (!conclusioneAssegno || conclusioneAssegno.length === 0) return "";
+		
 		return source`
-				${conclusioneAssegno?.map((conclusione) => {
+				${conclusioneAssegno.map((conclusione) => {
 					return stripIndent(conclusioneAssegnoRicercaTemplate(conclusione));
 				})}
 			`;
 	},
 
-	borseDiStudioSection(subsections: BorseDiStudio) {
+	borseDiStudioSection(subsections: BorseDiStudio | undefined) {
+		if (!subsections) return "";
 		return this.rinnovoBorsaStudioSubsection(subsections.rinnovi);
 	},
 
-	rinnovoBorsaStudioSubsection(rinnovi: Array<RinnovoBorsaStudio> | null) {
+	rinnovoBorsaStudioSubsection(rinnovi: Array<RinnovoBorsaStudio> | null | undefined) {
+		if (!rinnovi || rinnovi.length === 0) return "";
+		
 		return source`
-		${rinnovi?.map((rinnovo) => {
+		${rinnovi.map((rinnovo) => {
 			return stripIndent(rinnovoBorsaStudioTemaplate(rinnovo));
 		})}`;
 	},
 };
 
-export async function template(values: FormValues) {
-	const normalizzaData = (data: string) => {
-		const [anno, mese, giorno] = data ? data.split("-") : "";
+export async function template(values: FormValues, sections: string[]) {
+	const normalizzaData = (data: string | undefined) => {
+		if (!data) return "";
+		const [anno, mese, giorno] = data.split("-");
 		return `${giorno}/${mese}/${anno}`;
 	};
 
-	const store = getDefaultStore();
-	const verbale = store.get(verbaleAtom);
-
-	const items = verbale.sections
+	const validSections = sections.filter(section => !!section);
+	
+	const items = validSections
 		.map((section) => "\\item " + section)
 		.join("\n");
 
@@ -89,7 +100,7 @@ export async function template(values: FormValues) {
 
 		\\fancyhead[CO]{
 			\\includegraphics[scale=0.2]{logo_dmi.png}\\\\[0.5em]
-			\\textbf{Verbale n. ${values.numero} — ${normalizzaData(values.data)}}
+			\\textbf{Verbale n. ${values.numero || ""} — ${normalizzaData(values.data)}}
 		}
 
 		\\fancyfoot[C]{
@@ -97,7 +108,7 @@ export async function template(values: FormValues) {
 			\\vspace{0.5em}
 			\\begin{tabular}{p{0.5\\textwidth}c p{0.4\\textwidth}}
 			La segretaria verbalizzante & & Il Direttore \\\\
-			Prof./Prof.ssa ${values.verbalizzante} & & Prof./Prof.ssa ${values.direttore}
+			Prof./Prof.ssa ${values.verbalizzante || ""} & & Prof./Prof.ssa ${values.direttore || ""}
 			\\end{tabular}
 			\\\\ \\vspace{1em}
 			Pag. \\thepage
@@ -120,29 +131,27 @@ export async function template(values: FormValues) {
 			\\end{enumerate}
 
 			\\section{Approvazione verbale precedente}
-			Il Direttore mette ai voti l’approvazione del verbale nr. ${values.approvazione.numero_verbale} del ${normalizzaData(values.approvazione.data_verbale)} inviato in bozza a tutti i componenti del Consiglio. Nella forma emendata esso viene approvato da tutti i presenti alla seduta odierna, presenti anche nella sopracitata seduta, con l’astensione degli assenti (Allegato x). \\textbf{Il Consiglio, unanime, approva.}
+			${values.approvazione ? 
+				`Il Direttore mette ai voti l'approvazione del verbale nr. ${values.approvazione.numero_verbale || ""} del ${normalizzaData(values.approvazione.data_verbale)} inviato in bozza a tutti i componenti del Consiglio. Nella forma emendata esso viene approvato da tutti i presenti alla seduta odierna, presenti anche nella sopracitata seduta, con l'astensione degli assenti (Allegato x). \\textbf{Il Consiglio, unanime, approva.}` : 
+				"Approvazione del verbale precedente."
+			}
 
-	    ${verbale.sections
+			${validSections
 				.map((section) => {
 					switch (section) {
-						case "Assegni di ricerca":
-							return (
-								"\\section{Assegni di ricerca}" +
-								generator.assegniDiRicercaSection(
-									values.assegniDiRicerca as AssegniDiRicerca,
-								)
-							);
-						case "Borse di studio":
-							return (
-								"\\section{Borse di studio}" +
-								generator.borseDiStudioSection(
-									values.borseDiStudio as BorseDiStudio,
-								)
-							);
+						case "Assegni di ricerca": {
+							const content = generator.assegniDiRicercaSection(values.assegniDiRicerca);
+							return content ? "\\section{Assegni di ricerca}" + content : "";
+						}
+						case "Borse di studio": {
+							const content = generator.borseDiStudioSection(values.borseDiStudio);
+							return content ? "\\section{Borse di studio}" + content : "";
+						}
 						default:
 							return "";
 					}
 				})
+				.filter(content => !!content)
 				.join("\n\n")}
     \\end{document}
 		`;

@@ -56,8 +56,8 @@ export type Verbale = {
 	direttore: string;
 	presenze: Presenza[];
 	approvazione: ApprovazioneVerbalePrecedente;
-	assegniDiRicerca: AssegniDiRicerca;
-	borseDiStudio: BorseDiStudio;
+	assegniDiRicerca?: AssegniDiRicerca;
+	borseDiStudio?: BorseDiStudio;
 };
 
 export type FormValues = Verbale;
