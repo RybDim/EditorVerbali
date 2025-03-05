@@ -1,4 +1,10 @@
 "use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { PlusIcon, FileTextIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,32 +24,25 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { cn } from "@/lib/utils";
+
 import { VerbaleCard } from "@/components/verbale_card";
-import { useRouter } from "next/navigation";
 import { verbaleSchema } from "@/lib/schemas/verbale_schema";
-import { useEffect, useState } from "react";
+import { useVerbali } from "@/hooks/useVerbali";
 
 type VerbaleFormData = z.infer<typeof verbaleSchema>;
 
-interface Verbale {
-	id: string;
-	data: {
-		numero: string;
-		data: string;
-		verbalizzante: string;
-		direttore: string;
-	};
-	createdAt: string;
-}
+const FORM_FIELDS = [
+	{ name: 'numero', type: 'text', label: 'Numero' },
+	{ name: 'data', type: 'date', label: 'Data' },
+	{ name: 'verbalizzante', type: 'text', label: 'Verbalizzante' },
+	{ name: 'direttore', type: 'text', label: 'Direttore' }
+] as const;
 
 export default function Dashboard() {
-	const [open, setOpen] = useState(false);
-	const [verbali, setVerbali] = useState<Verbale[]>([]);
+	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const router = useRouter();
+
+	const { verbali, createVerbale, deleteVerbale, isLoading } = useVerbali();
 
 	const form = useForm<VerbaleFormData>({
 		resolver: zodResolver(verbaleSchema),
@@ -55,169 +54,120 @@ export default function Dashboard() {
 		},
 	});
 
-	useEffect(() => {
-		const getVerbali = async () => {
-			const response = await fetch("/api/verbale", {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				}
-			});
-
-			const data = await response.json();
-			setVerbali(data.verbali);
-		}
-		
-		getVerbali();
-	}, [])
-
 	const onSubmit = async (data: VerbaleFormData) => {
 		try {
-			const response = await fetch('/api/verbale', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(data),
-			});
-
-			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`);
-			}
-
-			const result = await response.json();
-			console.log('Verbale created:', result);
-			setOpen(false);
+			const result = await createVerbale(data);
+			setIsDialogOpen(false);
 			form.reset();
 			router.push(`/editor/${result.id}`);
 		} catch (error) {
-			if (error instanceof Error) {
-				console.error('Error creating verbale:', error.message);
-			} else {
-				console.error('Error creating verbale:', String(error));
-			}
+			console.error("Error creating verbale:", error);
 		}
 	};
 
+	const onDelete = async (id: string) => {
+		try {
+			await deleteVerbale(id);
+		} catch(error) {
+			console.error("Error deleting verbale: ", error);
+		}
+	}
+
 	return (
-		<>
-			<Dialog open={open} onOpenChange={setOpen}>
-				<DialogTrigger asChild>
-					<Button variant="outline">Nuovo verbale</Button>
-				</DialogTrigger>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Crea nuovo verbale</DialogTitle>
-					</DialogHeader>
-					<Form {...form}>
-						<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
-							<fieldset className="space-y-4">
-								<legend className="sr-only">Dettagli del verbale</legend>
+		<div className="min-h-screen bg-gray-50 p-6">
+			<div className="max-w-7xl mx-auto">
+				{/* Header */}
+				<header className="flex justify-between items-center mb-8">
+					<h1 className="text-3xl font-bold text-gray-800">Verbali Dashboard</h1>
+					
+					{/* Create New Verbale Dialog */}
+					<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+						<DialogTrigger asChild>
+							<Button 
+								className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
+							>
+								<PlusIcon className="w-5 h-5" />
+								Nuovo Verbale
+							</Button>
+						</DialogTrigger>
 
-								<FormField
-									control={form.control}
-									name="numero"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Numero verbale</FormLabel>
-											<FormControl>
-												<input
-													className={cn(
-														"flex h-9 w-full rounded-md border border-input bg-accent focus:bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-													)}
-													type="number"
-													placeholder="Inserisci il numero del verbale"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+						<DialogContent className="sm:max-w-[425px]">
+							<DialogHeader>
+								<DialogTitle className="text-2xl font-semibold text-gray-800">
+									Crea nuovo verbale
+								</DialogTitle>
+							</DialogHeader>
 
-								<FormField
-									control={form.control}
-									name="data"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Data adunanza</FormLabel>
-											<FormControl>
-												<input
-													className={cn(
-														"flex h-9 w-full rounded-md border border-input bg-accent focus:bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-													)}
-													type="date"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							</fieldset>
+							<Form {...form}>
+								<form
+									onSubmit={form.handleSubmit(onSubmit)}
+									className="flex flex-col gap-6"
+								>
+									<div className="space-y-4">
+										{FORM_FIELDS.map(({ name, type, label }) => (
+											<FormField
+												key={name}
+												control={form.control}
+												name={name}
+												render={({ field }) => (
+													<FormItem>
+														<div className="flex items-center gap-3">
+															{/* <Icon className="w-5 h-5 text-gray-500" /> */}
+															<FormLabel className="text-gray-700">{label}</FormLabel>
+														</div>
+														<FormControl>
+															<Input
+																type={type}
+																placeholder={`Inserisci il ${label.toLowerCase()}`}
+																className="mt-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+																{...field}
+															/>
+														</FormControl>
+														<FormMessage className="text-red-500 text-sm mt-1" />
+													</FormItem>
+												)}
+											/>
+										))}
+									</div>
 
-							<fieldset className="space-y-4">
-								<FormField
-									control={form.control}
-									name="verbalizzante"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Verbalizzante</FormLabel>
-											<FormControl>
-												<Input
-													placeholder="Inserisci il verbalizzante"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+									<DialogFooter>
+										<Button
+											type="submit"
+											disabled={form.formState.isSubmitting || isLoading}
+											className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+										>
+											{form.formState.isSubmitting || isLoading
+												? "Creazione in corso..."
+												: "Crea Verbale"}
+										</Button>
+									</DialogFooter>
+								</form>
+							</Form>
+						</DialogContent>
+					</Dialog>
+				</header>
 
-								<FormField
-									control={form.control}
-									name="direttore"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Direttore</FormLabel>
-											<FormControl>
-												<Input
-													placeholder="Inserisci il direttore"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							</fieldset>
-
-							<DialogFooter>
-								<Button type="submit" disabled={form.formState.isSubmitting}>
-									{form.formState.isSubmitting ? 'Creazione...' : 'Crea'}
-								</Button>
-							</DialogFooter>
-						</form>
-					</Form>
-				</DialogContent>
-			</Dialog>
-			<div className="flex flex-wrap space-x-4 p-5">
-				{verbali.map((verbale) => (
-					<VerbaleCard 
-						key={verbale.id} 
-						verbale={{
-							id: verbale.id,
-							data: {
-								numero: verbale.data.numero,
-								data: verbale.data.data,
-								verbalizzante: verbale.data.verbalizzante,
-								direttore: verbale.data.direttore,
-							},
-							createdAt: verbale.createdAt
-						}
-					}/>
-				))}
+				{/* Verbali Grid */}
+				{verbali.length > 0 ? (
+					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+						{verbali.map((verbale) => (
+							<VerbaleCard 
+								key={verbale.id} 
+								verbale={verbale}
+								onDelete={onDelete}
+								// className="transition-all duration-300 hover:shadow-lg hover:scale-105" 
+							/>
+						))}
+					</div>
+				) : (
+					<div className="text-center py-12 bg-white rounded-lg shadow-md">
+						<FileTextIcon className="mx-auto w-16 h-16 text-gray-300 mb-4" />
+						<p className="text-xl text-gray-600">
+							Nessun verbale creato. Inizia creando il tuo primo verbale!
+						</p>
+					</div>
+				)}
 			</div>
-		</>
+		</div>
 	);
 }

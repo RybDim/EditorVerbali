@@ -65,3 +65,31 @@ export async function PUT(
 		}
 	}
 }
+
+export async function DELETE(
+	req: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
+	try {
+		const id = (await params).id;
+		const deletedVerbale = await prisma.verbale.delete({
+			where: {
+				id: id,
+			}
+		});
+
+		return NextResponse.json({
+			deltedVerbale: deletedVerbale
+		}, {
+			status: 200
+		})
+	} catch (error) {
+		if(error instanceof Prisma.PrismaClientKnownRequestError) {
+			return NextResponse.json({
+				error: `Errore nella cancellazione del verbale: ${error.message}` 
+			}, {
+				status: 500
+			})
+		}
+	}
+}
