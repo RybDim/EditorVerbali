@@ -1,4 +1,4 @@
-import { PlusIcon, MinusIcon, ArrowUp, ArrowDown, DownloadIcon } from "lucide-react";
+import { PlusIcon, MinusIcon, ArrowUp, ArrowDown, DownloadIcon, RefreshCcw } from "lucide-react";
 
 interface PdfViewerToolbarProps {
 	currentPage: number;
@@ -26,7 +26,6 @@ export function PdfViewerToolbar({
 	downloadPdf,
 }: PdfViewerToolbarProps) {
 	return (
-		// <div className="flex items-center bg-gray-200 p-2 border-b border-gray-300 shadow-sm">
 		<div className="flex items-center bg-accent p-2 border-b border-gray-300 shadow-sm">
 
 			<button
@@ -73,14 +72,25 @@ export function PdfViewerToolbar({
 				<ArrowDown className="h-4 w-4" />
 			</button>
 
-			<button
-				onClick={downloadPdf}
-				className="px-3 py-2 mx-1 bg-transparent hover:bg-gray-100 active:bg-gray-200 transition disabled:opacity-50 ml-auto"
-				disabled={loading}
-				title="Download PDF"
-			>
-				<DownloadIcon className="h-4 w-4" />
-			</button>
+			<div className="ml-auto">
+				<button 
+					form="verbale-form"
+					className="px-3 py-2 mx-1 bg-transparent hover:bg-gray-100 active:bg-gray-200 transition disabled:opacity-50"
+					disabled={loading}
+				>
+					<RefreshCcw className="h-4 w-4" />
+				</button>
+				<button
+					onClick={downloadPdf}
+					className="px-3 py-2 mx-1 bg-transparent hover:bg-gray-100 active:bg-gray-200 transition disabled:opacity-50"
+					disabled={loading}
+					title="Download PDF"
+				>
+					<DownloadIcon className="h-4 w-4" />
+				</button>
+
+			</div>
+
 		</div>
 	);
 }

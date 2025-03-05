@@ -14,21 +14,20 @@ interface PdfViewerProps {
 	base64: string;
 }
 
-export default function PdfViewer({ base64 }: PdfViewerProps) {
+export function PdfViewer({ base64 }: PdfViewerProps) {
 	const [numPages, setNumPages] = useState<number>(0);
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [scale, setScale] = useState<number>(1.0);
 	const [loading, setLoading] = useState<boolean>(true);
-	const [error, setError] = useState<string | null>(null);
 	const [pdfData, setPdfData] = useState<string | null>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const pagesContainerRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
-		console.log("Base64 updated:", base64 ? base64.substring(0, 30) + "..." : "null/undefined");
-		console.log("PDFVIEWER base64: ", base64);
+
 		if (!base64) {
-			setError("No PDF data provided");
+			console.log("NO PDF DATA PROVIDED");
+			// setError("No PDF data provided");
 			setLoading(false);
 			return;
 		}
@@ -38,7 +37,6 @@ export default function PdfViewer({ base64 }: PdfViewerProps) {
 			setPdfData(`${dataPrefix}${base64}`);
 		} catch (error) {
 			console.error("Error processing base64 data:", error);
-			setError(error instanceof Error ? error.message : "Unknown error processing PDF data");
 			setLoading(false);
 		}
 	}, [base64]);
@@ -82,7 +80,6 @@ export default function PdfViewer({ base64 }: PdfViewerProps) {
 
 	const onDocumentLoadError = (error: Error) => {
 		console.error("Error loading PDF:", error);
-		setError(`Failed to load PDF: ${error.message}`);
 		setLoading(false);
 	};
 
@@ -136,19 +133,18 @@ export default function PdfViewer({ base64 }: PdfViewerProps) {
 
 			const a = document.createElement('a');
 			a.href = dataUrl;
-			a.download = "document.pdf";
+			a.download = `verbale.pdf`;
 			document.body.appendChild(a);
 			a.click();
 			document.body.removeChild(a);
 		} catch (error) {
 			console.error("Error downloading PDF:", error);
-			setError(`Download failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
 		}
 	};
 
 	return (
 		<div
-			className="flex flex-col h-screen overflow-hidden"
+			className="flex flex-col h-full overflow-hiddens"
 			style={{
 				border: "1px solid rgba(0, 0, 0, 0.3)",
 			}}
@@ -173,10 +169,6 @@ export default function PdfViewer({ base64 }: PdfViewerProps) {
 				{!pdfData ? (
 					<div className="h-full w-full flex items-center justify-center">
 						<p className="text-gray-500">No PDF document available</p>
-					</div>
-				) : error ? (
-					<div className="h-full w-full flex items-center justify-center">
-						<p className="text-red-500">{error}</p>
 					</div>
 				) : (
 					<div className="flex flex-col items-center my-2 mx-auto">
