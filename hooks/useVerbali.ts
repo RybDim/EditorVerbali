@@ -25,11 +25,11 @@ export function useVerbali() {
 		setIsLoading(true);
 		setError(null);
 		try {
-			const response = await axios.get('/api/verbale');
+			const response = await axios.get("/api/verbale");
 			setVerbali(response.data.verbali);
 		} catch (err) {
-			setError(err instanceof Error ? err : new Error('An unknown error occurred'));
-			console.error('Error fetching verbali:', err);
+			setError(err instanceof Error ? err : new Error("Erorre sconosciuto"));
+			console.error("Errore nel recupero dei verbali :", err);
 		} finally {
 			setIsLoading(false);
 		}
@@ -39,12 +39,12 @@ export function useVerbali() {
 		setIsLoading(true);
 		setError(null);
 		try {
-			const response = await axios.post('/api/verbale', data);
+			const response = await axios.post("/api/verbale", data);
 			setVerbali(prev => [...prev, response.data.verbale]);
 			return response.data;
 		} catch (err) {
-			setError(err instanceof Error ? err : new Error('An unknown error occurred'));
-			console.error('Error creating verbale:', err);
+			setError(err instanceof Error ? err : new Error("An unknown error occurred"));
+			console.error("Error creating verbale:", err);
 			throw err;
 		} finally {
 			setIsLoading(false);
@@ -58,8 +58,8 @@ export function useVerbali() {
 			await axios.delete(`/api/verbale/${id}`);
 			setVerbali(prev => prev.filter(verbale => verbale.id !== id));
 		} catch (err) {
-			setError(err instanceof Error ? err : new Error('An unknown error occurred'));
-			console.error('Error deleting verbale:', err);
+			setError(err instanceof Error ? err : new Error("An unknown error occurred"));
+			console.error("Error deleting verbale:", err);
 		} finally {
 			setIsLoading(false);
 		}

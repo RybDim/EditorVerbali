@@ -3,12 +3,25 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useFieldArray } from "react-hook-form";
+import { DbVerbaleData } from "@/types/types";
+import { useEffect } from "react";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
-export function ConclusioneAssegnoRicerca() {
-	const { fields, append } = useFieldArray({
+export function ConclusioneAssegnoRicerca({ verbale }: { verbale: DbVerbaleData }) {
+	const formContext = useFormContext();
+	const { fields, append, replace } = useFieldArray({
 		name: "assegniDiRicerca.conclusioni",
+		control: formContext.control
 	});
+
+	useEffect(() => {
+		const conclusioni = verbale?.data?.assegniDiRicerca?.conclusioni;
+		
+		if (conclusioni && Array.isArray(conclusioni) && conclusioni.length > 0 && fields.length === 0) {
+			replace(conclusioni);
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const handleAdd = () => {
 		append({

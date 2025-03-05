@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	Select,
 	SelectContent,
@@ -12,15 +12,31 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { RinnovoBorsaDiStudio } from "./rinnovo";
+import { DbVerbaleData } from "@/types/types";
 
-export function BorseDiStudio() {
+export function BorseDiStudio({ verbale }: { verbale: DbVerbaleData}) {
 	const [sottosezioni, setSottosezioni] = useState<string[]>([]);
 	const [value, setSelectedValue] = useState<string | null>(null);
+
+	useEffect(() => {
+		if (!verbale?.data?.borseDiStudio) return;
+		
+		const subsections = [];
+		
+		if (verbale.data.borseDiStudio.rinnovi?.length > 0) {
+			subsections.push("rinnovo");
+		}
+		
+		if (subsections.length > 0) {
+			setSottosezioni(subsections);
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const renderComponent = (type: string) => {
 		switch (type) {
 			case "rinnovo":
-				return <RinnovoBorsaDiStudio key="rinnovo" />;
+				return <RinnovoBorsaDiStudio key="rinnovo" verbale={verbale} />;
 			default:
 				return null;
 		}

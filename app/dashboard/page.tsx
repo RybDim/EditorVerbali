@@ -112,7 +112,6 @@ export default function Dashboard() {
 												render={({ field }) => (
 													<FormItem>
 														<div className="flex items-center gap-3">
-															{/* <Icon className="w-5 h-5 text-gray-500" /> */}
 															<FormLabel className="text-gray-700">{label}</FormLabel>
 														</div>
 														<FormControl>
@@ -147,7 +146,6 @@ export default function Dashboard() {
 					</Dialog>
 				</header>
 
-				{/* Verbali Grid */}
 				{verbali.length > 0 ? (
 					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 						{verbali.map((verbale) => (
@@ -155,7 +153,6 @@ export default function Dashboard() {
 								key={verbale.id} 
 								verbale={verbale}
 								onDelete={onDelete}
-								// className="transition-all duration-300 hover:shadow-lg hover:scale-105" 
 							/>
 						))}
 					</div>

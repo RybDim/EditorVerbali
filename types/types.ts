@@ -60,4 +60,13 @@ export type Verbale = {
 	borseDiStudio?: BorseDiStudio;
 };
 
+export type DbVerbaleData = {
+	id: string;
+	data?: Verbale;
+	base64: string;
+	sections?: string[];
+	updatedAt: string;
+	userId: string;
+}
+
 export type FormValues = Verbale;

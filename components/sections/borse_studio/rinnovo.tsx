@@ -4,12 +4,25 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useFieldArray } from "react-hook-form";
+import { DbVerbaleData } from "@/types/types";
+import { useEffect } from "react";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
-export function RinnovoBorsaDiStudio() {
-	const { fields, append } = useFieldArray({
+export function RinnovoBorsaDiStudio({ verbale }: { verbale: DbVerbaleData }) {
+	const formContext = useFormContext();
+	const { fields, append, replace } = useFieldArray({
 		name: "borseDiStudio.rinnovi",
+		control: formContext.control
 	});
+
+	useEffect(() => {
+		const rinnovi = verbale?.data?.borseDiStudio?.rinnovi;
+		
+		if (rinnovi && Array.isArray(rinnovi) && rinnovi.length > 0 && fields.length === 0) {
+			replace(rinnovi);
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const handleAdd = () => {
 		append({

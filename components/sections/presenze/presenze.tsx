@@ -6,66 +6,36 @@ import * as cheerio from "cheerio";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import { Presenza } from "@/types/types";
+import { useFormContext } from "react-hook-form";
+import { DbVerbaleData, Presenza } from "@/types/types";
 
-export function Presenze() {
+export function Presenze({ verbale }: { verbale: DbVerbaleData }) {
 	const [partecipanti, setPartecipanti] = useState<Presenza[]>([]);
+	const formContext = useFormContext();
+
 	useEffect(() => {
 		const scrape_page = async () => {
 			const response = await axios.get("/api/proxy");
 			const $ = cheerio.load(response.data);
 			const results = $("b ~ ul");
 
-			const ordinari = results
-				.eq(0)
-				.find("li")
-				.map((_, el) => $(el).text().trim())
-				.get();
+			const extractParticipants = (index: number) =>
+				results.eq(index)
+					.find("li")
+					.map((_, el) => {
+						const text = $(el).text().trim();
+						return index === 7 ? text.split(" -")[0].trim() : text;
+					})
+					.get();
 
-			const associati = results
-				.eq(1)
-				.find("li")
-				.map((_, el) => $(el).text().trim())
-				.get();
-
-			const ricercatori = results
-				.eq(2)
-				.find("li")
-				.map((_, el) => $(el).text().trim())
-				.get();
-
-			const ricercatori_a = results
-				.eq(3)
-				.find("li")
-				.map((_, el) => $(el).text().trim())
-				.get();
-
-			const ricercatori_b = results
-				.eq(4)
-				.find("li")
-				.map((_, el) => $(el).text().trim())
-				.get();
-
-			const dottorandi = results
-				.eq(5)
-				.find("li")
-				.map((_, el) => $(el).text().trim())
-				.get();
-
-			const amministrativi = results
-				.eq(6)
-				.find("li")
-				.map((_, el) => $(el).text().trim())
-				.get();
-
-			const rappresentanti = results
-				.eq(7)
-				.find("li")
-				.map((_, el) => {
-					const text = $(el).text().trim();
-					return text.split(" -")[0].trim();
-				})
-				.get();
+			const ordinari = extractParticipants(0);
+			const associati = extractParticipants(1);
+			const ricercatori = extractParticipants(2);
+			const ricercatori_a = extractParticipants(3);
+			const ricercatori_b = extractParticipants(4);
+			const dottorandi = extractParticipants(5);
+			const amministrativi = extractParticipants(6);
+			const rappresentanti = extractParticipants(7);
 
 			const creaDizionario = (nomi: string[], ruolo: string) => {
 				return nomi.map((nome) => ({
@@ -87,6 +57,7 @@ export function Presenze() {
 
 			partecipanti.sort((a, b) => a.nome.localeCompare(b.nome));
 
+
 			partecipanti = [
 				...partecipanti,
 				...creaDizionario(rappresentanti, "STUD"),
@@ -95,9 +66,18 @@ export function Presenze() {
 			];
 
 			setPartecipanti(partecipanti);
+
+			if (verbale.data?.presenze) {
+				if (verbale.data?.presenze.length > 0) {
+					formContext.setValue("presenze", verbale.data?.presenze);
+				} else {
+					formContext.setValue("presenze", partecipanti);
+				}
+			}
 		};
 
 		scrape_page();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (

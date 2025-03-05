@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RinunciaAssegnoRicerca } from "./rinuncia";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	Select,
 	SelectContent,
@@ -13,17 +13,37 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ConclusioneAssegnoRicerca } from "./conclusione";
+import { DbVerbaleData } from "@/types/types";
 
-export function AssegniDiRIcerca() {
+export function AssegniDiRicerca({ verbale }: { verbale: DbVerbaleData }) {
 	const [sottosezioni, setSottosezioni] = useState<string[]>([]);
 	const [value, setSelectedValue] = useState<string | null>(null);
+
+	useEffect(() => {
+		if (!verbale?.data?.assegniDiRicerca) return;
+		
+		const subsections = [];
+		
+		if (verbale.data.assegniDiRicerca.rinunce?.length > 0) {
+			subsections.push("rinuncia");
+		}
+		
+		if (verbale.data.assegniDiRicerca.conclusioni?.length > 0) {
+			subsections.push("conclusione");
+		}
+		
+		if (subsections.length > 0) {
+			setSottosezioni(subsections);
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const renderComponent = (type: string) => {
 		switch (type) {
 			case "rinuncia":
-				return <RinunciaAssegnoRicerca key="rinuncia" />;
+				return <RinunciaAssegnoRicerca key="rinuncia" verbale={verbale}/>;
 			case "conclusione":
-				return <ConclusioneAssegnoRicerca key="conclusione" />;
+				return <ConclusioneAssegnoRicerca key="conclusione" verbale={verbale} />;
 			default:
 				return null;
 		}

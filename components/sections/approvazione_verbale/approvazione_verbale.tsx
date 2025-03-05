@@ -2,12 +2,19 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useFieldArray } from "react-hook-form";
+import { DbVerbaleData } from "@/types/types";
+import { useEffect } from "react";
+import { useFormContext } from "react-hook-form";
 
-export function ApprovazioneVerbalePrecedente() {
-	const {} = useFieldArray({
-		name: "approvazione",
-	});
+export function ApprovazioneVerbalePrecedente({ verbale }: { verbale: DbVerbaleData}) {
+	const formContext = useFormContext();
+
+	useEffect(() => {
+		if(verbale.data?.approvazione !== undefined){
+			formContext.setValue("approvazione.numero_verbale", verbale.data?.approvazione.numero_verbale);
+			formContext.setValue("approvazione.data_verbale", verbale.data?.approvazione.data_verbale);
+		}
+	}, [formContext, verbale.data?.approvazione]);
 
 	return (
 		<Card className="shadow-none rounded-sm hover:shadow-md">

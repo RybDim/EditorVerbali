@@ -88,11 +88,15 @@ export async function template(values: FormValues, sections: string[]) {
 		\\usepackage{fancyhdr}
 		\\usepackage{geometry}
 		\\usepackage{lipsum}
+		\\usepackage{xltabular}
 
 		\\geometry{top=2cm, bottom=5cm, left=2.5cm, right=2.5cm}
 		\\setlength{\\headheight}{80pt}
 		\\setlength{\\headsep}{0.5cm}
 		\\setlength{\\footskip}{0.5cm}
+		\\setlength{\\tabcolsep}{5pt}
+		\\renewcommand{\\arraystretch}{1.5}
+		% \\newcolumntype{Y}{>{\\centering\\arraybackslash}}X}
 
 		\\pagestyle{fancy}
 		\\renewcommand{\\headrulewidth}{0pt}
@@ -129,6 +133,17 @@ export async function template(values: FormValues, sections: string[]) {
 				\\item{Approvazione verbale precedente}\n
 				${itemList}
 			\\end{enumerate}
+
+			Sono presenti, assenti giustificati o assenti i seguenti componenti del Consiglio:
+			\\begin{xltabular}{\\textwidth}{@{} |l|l|l|X|X|X| @{}}\n
+			\\hline\n
+			& & \\textbf{Qualifica} & \\textbf{Presente} & \\textbf{Assente} & \\textbf{Assente Giustificato} \\\\ \\hline\n
+			${values.presenze
+			.map((presenza, index) =>
+				`${index+1} & ${presenza.nome} & ${presenza.ruolo} & ${presenza.presente} & ${presenza.assente} & ${presenza.assente_giustificato} \\\\ \\hline`
+			)
+			.join("\n")}
+			\\end{xltabular}\n
 
 			\\section{Approvazione verbale precedente}
 			${values.approvazione ? 
