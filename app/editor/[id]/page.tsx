@@ -1,5 +1,5 @@
 "use client";
-import { Profiler } from "react";
+import { lazy, Profiler, Suspense } from "react";
 import { Presenze } from "@/components/sections/presenze/presenze";
 import { ApprovazioneVerbalePrecedente } from "@/components/sections/approvazione_verbale/approvazione_verbale";
 import { VerbaleHeader } from "@/components/verbale_header";
@@ -7,21 +7,32 @@ import { PdfViewer } from "@/components/pdf-viewer/pdfViewer";
 import { Loader2 } from "lucide-react";
 import { useVerbale } from "@/hooks/useVerbale";
 import { FormProvider } from "react-hook-form";
-import { memo } from "react";
-import { AssegniDiRicerca } from "@/components/sections/assegni_ricerca/main_assegni";
-import { BorseDiStudio } from "@/components/sections/borse_studio/main_borse_studio";
 import { DbVerbaleData } from "@/types/types";
 
-const SectionComponent = memo(({ type, verbale }: { type: string; verbale: DbVerbaleData }) => {
-	switch (type) {
-		case "Assegni di ricerca":
-			return <AssegniDiRicerca verbale={verbale} />;
-		case "Borse di studio":
-			return <BorseDiStudio verbale={verbale} />;
-		default:
-			return null;
-	}
-});
+const AssegniDiRicerca = lazy(() => import("@/components/sections/assegni_ricerca/main_assegni"));
+const BorseDiStudio = lazy(() => import("@/components/sections/borse_studio/main_borse_studio"));
+
+function SectionComponent({ type, verbale }: { type: string; verbale: DbVerbaleData }) {
+	return (
+		<Suspense fallback={<SectionSkeleton />}>
+			{type === "Assegni di ricerca" ? (
+				<AssegniDiRicerca verbale={verbale} />
+			) : type === "Borse di studio" ? (
+				<BorseDiStudio verbale={verbale} />
+			) : null}
+		</Suspense>
+	);
+}
+
+function SectionSkeleton() {
+	return (
+		<div className="animate-pulse space-y-3 mb-6">
+			<div className="h-7 bg-gray-200 rounded w-1/3"></div>
+			<div className="h-24 bg-gray-200 rounded"></div>
+		</div>
+	);
+}
+
 SectionComponent.displayName = "SectionComponent";
 
 export default function Editor() {

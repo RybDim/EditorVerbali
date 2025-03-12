@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { RinnovoBorsaDiStudio } from "./rinnovo";
 import { DbVerbaleData } from "@/types/types";
 
-export function BorseDiStudio({ verbale }: { verbale: DbVerbaleData}) {
+export default function BorseDiStudio({ verbale }: { verbale: DbVerbaleData}) {
 	const [sottosezioni, setSottosezioni] = useState<string[]>([]);
 	const [value, setSelectedValue] = useState<string | null>(null);
 

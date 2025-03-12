@@ -66,13 +66,13 @@ export function Presenze({ verbale }: { verbale: DbVerbaleData }) {
 			];
 
 			setPartecipanti(partecipanti);
-
+			
 			if (verbale.data?.presenze) {
 				if (verbale.data?.presenze.length > 0) {
 					formContext.setValue("presenze", verbale.data?.presenze);
-				} else {
-					formContext.setValue("presenze", partecipanti);
 				}
+			} else {
+				formContext.setValue("presenze", partecipanti);
 			}
 		};
 

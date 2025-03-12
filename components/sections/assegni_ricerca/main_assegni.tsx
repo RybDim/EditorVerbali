@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { ConclusioneAssegnoRicerca } from "./conclusione";
 import { DbVerbaleData } from "@/types/types";
 
-export function AssegniDiRicerca({ verbale }: { verbale: DbVerbaleData }) {
+export default function AssegniDiRicerca({ verbale }: { verbale: DbVerbaleData }) {
 	const [sottosezioni, setSottosezioni] = useState<string[]>([]);
 	const [value, setSelectedValue] = useState<string | null>(null);
 
@@ -54,13 +54,14 @@ export function AssegniDiRicerca({ verbale }: { verbale: DbVerbaleData }) {
 			setSottosezioni((prev) => [...prev, value]);
 		}
 	};
+
 	return (
 		<>
 			<Card className="shadow-none rounded-sm hover:shadow-md ">
 				<CardHeader className="border-b p-3">
 					<div className="flex justify-between">
 						<CardTitle className="text-lg inline">Assegni di ricerca</CardTitle>
-						<div className="flex space-x-2">
+						<div className="flex space-x-2 items-center">
 							<Select onValueChange={setSelectedValue}>
 								<SelectTrigger className="w-[180px]">
 									<SelectValue placeholder="Sottosezioni" />
